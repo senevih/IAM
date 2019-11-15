@@ -158,7 +158,32 @@ follow these steps to install php7.X deprecated php-mcrypt [from here](https://g
 > Note: Ignore the warning about running composer as root/super user!
 
    * `cp /opt/codeigniter/index.php /opt/rr3/`
+   
 
+ Open /opt/rr3/index.php file and find
+ 
+ ```
+ $system_path = 'system';
+ ```
+ 
+ and change to
+ 
+ ```
+ $system_path = '/opt/codeigniter/system';
+ ```
+ 
+ You may also want to set production environment. To do it find line
+ 
+ ```
+ define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+ ```
+ 
+ and before that line add
+ 
+ ```
+ $_SERVER['CI_ENV'] = 'production';
+ ```
+ 
 #### Configure Apache Virtual Host
 
 Disable the default configuration
@@ -357,6 +382,20 @@ To populate tables we are going to use doctrine tool.
 
 `cd /opt/rr3/application`
 
+Edit composer.json to add
+
+```php
+"doctrine/common": "2.8.1",
+
+```
+
+ in to the beginning of its require section and run
+ 
+ ```bash
+./doctrine orm:schema-tool:update --force
+```
+
+then run
 
 ```bash
 ./doctrine orm:schema-tool:create
@@ -371,7 +410,7 @@ and verify owner of application/models/Proxies/* - apache user should be owner
 
 or 
 
-`chown -R www-data application/models/Proxies/`
+`chown -R www-data models/Proxies/`
 
 In the future after every update you will need to run
 
